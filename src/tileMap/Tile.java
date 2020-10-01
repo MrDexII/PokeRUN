@@ -1,4 +1,4 @@
-package TileMap;
+package tileMap;
 
 import java.awt.image.BufferedImage;
 
@@ -18,5 +18,4 @@ public class Tile {
 	
 	public BufferedImage getImage() { return image; }
 	public int getType() { return type; }
-	
 }

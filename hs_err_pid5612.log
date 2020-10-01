@@ -72,8 +72,8 @@ J 413 C1 sun.java2d.pipe.DrawImage.scaleImage(Lsun/java2d/SunGraphics2D;Ljava/aw
 J 468 C1 sun.java2d.pipe.ValidatePipe.scaleImage(Lsun/java2d/SunGraphics2D;Ljava/awt/Image;IIIILjava/awt/Color;Ljava/awt/image/ImageObserver;)Z (33 bytes) @ 0x02378078 [0x02377ff0+0x88]
 J 412 C1 sun.java2d.SunGraphics2D.drawImage(Ljava/awt/Image;IIIILjava/awt/Color;Ljava/awt/image/ImageObserver;)Z (196 bytes) @ 0x02361b60 [0x02361a10+0x150]
 J 411 C1 sun.java2d.SunGraphics2D.drawImage(Ljava/awt/Image;IIIILjava/awt/image/ImageObserver;)Z (15 bytes) @ 0x02361798 [0x02361740+0x58]
-J 466 C1 Main.GamePanel.drawToScreen()V (28 bytes) @ 0x02377924 [0x02377850+0xd4]
-j  Main.GamePanel.run()V+20
+J 466 C1 main.GamePanel.drawToScreen()V (28 bytes) @ 0x02377924 [0x02377850+0xd4]
+j  main.GamePanel.run()V+20
 j  java.lang.Thread.run()V+11
 v  ~StubRoutines::call_stub
 
@@ -281,7 +281,7 @@ Dynamic libraries:
 
 VM Arguments:
 jvm_args: -Dfile.encoding=Cp1250 
-java_command: Main.Game
+java_command: main.Game
 java_class_path (initial): C:\Users\Andrzej\workspace\Gra\bin
 Launcher Type: SUN_STANDARD
 
