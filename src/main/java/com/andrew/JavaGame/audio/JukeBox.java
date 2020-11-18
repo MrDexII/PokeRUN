@@ -101,5 +101,4 @@ public class JukeBox {
         stop(s);
         clips.get(s).close();
     }
-
 }

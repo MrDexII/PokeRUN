@@ -1,4 +1,4 @@
-package com.andrew.JavaGame.entity;
+package com.andrew.JavaGame.entity.things.player;
 
 public class PlayerSave {
 

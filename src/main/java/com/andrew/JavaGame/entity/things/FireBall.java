@@ -1,6 +1,8 @@
-package com.andrew.JavaGame.entity;
+package com.andrew.JavaGame.entity.things;
 
 
+import com.andrew.JavaGame.entity.Animation;
+import com.andrew.JavaGame.entity.MapObject;
 import com.andrew.JavaGame.tileMap.TileMap;
 
 import javax.imageio.ImageIO;
@@ -10,11 +12,9 @@ import java.awt.image.BufferedImage;
 public class FireBall extends MapObject {
 
     private boolean hit;
-    private boolean remove;
     private BufferedImage[] hitSprites;
 
     public FireBall(TileMap tm, boolean right) {
-
         super(tm);
 
         facingRight = right;
@@ -30,7 +30,6 @@ public class FireBall extends MapObject {
 
         // load sprites
         try {
-
             BufferedImage spritesheet = ImageIO.read(
                     getClass().getResourceAsStream("/Sprites/Player/knife.gif")
             );
@@ -55,8 +54,6 @@ public class FireBall extends MapObject {
                 animation = new Animation();
                 animation.setFrames(sprites);
                 animation.setDelay(10);
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,12 +68,7 @@ public class FireBall extends MapObject {
         dx = 0;
     }
 
-    public boolean shoulRemove() {
-        return remove;
-    }
-
     public void update() {
-
         checkTileMapCollision();
         setPosition(xtemp, ytemp);
 
@@ -84,17 +76,14 @@ public class FireBall extends MapObject {
             setHit();
         }
 
-        animation.update();
         if (hit && animation.hasPlayedOnce()) {
             remove = true;
         }
-
+        super.update();
     }
 
     public void draw(Graphics2D g) {
-
         setMapPosition();
-
         super.draw(g);
     }
 }

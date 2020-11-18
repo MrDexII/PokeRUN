@@ -1,7 +1,7 @@
 package com.andrew.JavaGame.gameState;
 
 import com.andrew.JavaGame.audio.JukeBox;
-import com.andrew.JavaGame.entity.PlayerSave;
+import com.andrew.JavaGame.entity.things.player.PlayerSave;
 import com.andrew.JavaGame.handlers.Keys;
 import com.andrew.JavaGame.tileMap.Background;
 

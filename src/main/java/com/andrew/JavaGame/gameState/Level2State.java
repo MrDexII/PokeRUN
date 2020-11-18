@@ -4,6 +4,9 @@ import com.andrew.JavaGame.GamePanel;
 import com.andrew.JavaGame.audio.JukeBox;
 import com.andrew.JavaGame.entity.*;
 import com.andrew.JavaGame.entity.enemies.*;
+import com.andrew.JavaGame.entity.things.*;
+import com.andrew.JavaGame.entity.things.player.Player;
+import com.andrew.JavaGame.entity.things.player.PlayerSave;
 import com.andrew.JavaGame.handlers.Keys;
 import com.andrew.JavaGame.tileMap.Background;
 import com.andrew.JavaGame.tileMap.TileMap;
@@ -21,7 +24,7 @@ public class Level2State extends GameState {
     private Player player;
     private TileMap tileMap;
     private ArrayList<Enemy> enemies;
-    private ArrayList<Explosion> explosions;
+    private ArrayList<MapObject> explosions;
 
     private HUD hud;
     private Teleport teleport;
@@ -64,7 +67,7 @@ public class Level2State extends GameState {
         populateEnemies();
 
         // explosions
-        explosions = new ArrayList<Explosion>();
+        explosions = new ArrayList<MapObject>();
 
         hud = new HUD(player);
 
@@ -90,40 +93,40 @@ public class Level2State extends GameState {
 
         enemies = new ArrayList<Enemy>();
 
-        caterpie c;
+        Bandit c;
         Point[] pointsc = new Point[]{
                 new Point(510, 305),
         };
 
         for (int i = 0; i < pointsc.length; i++) {
-            c = new caterpie(tileMap);
+            c = new Bandit(tileMap);
             c.setPosition(pointsc[i].x, pointsc[i].y);
             enemies.add(c);
 
         }
-        pidgey p;
+        Flame p;
         Point[] pointsp = new Point[]{
                 new Point(530, 460),
         };
 
         for (int i = 0; i < pointsp.length; i++) {
-            p = new pidgey(tileMap);
+            p = new Flame(tileMap);
             p.setPosition(pointsp[i].x, pointsp[i].y);
             enemies.add(p);
         }
-        enemy1 enemy;
+        Samu enemy;
         Point[] pointsenemy = new Point[]{
                 new Point(2090, 500),
                 new Point(3450, 500),
         };
 
         for (int i = 0; i < pointsenemy.length; i++) {
-            enemy = new enemy1(tileMap);
+            enemy = new Samu(tileMap);
             enemy.setPosition(pointsenemy[i].x, pointsenemy[i].y);
             enemies.add(enemy);
         }
 
-        zubat z;
+        Czesiek z;
         Point[] zubatz = new Point[]{
                 new Point(939, 305),
                 new Point(1850, 500),
@@ -131,7 +134,7 @@ public class Level2State extends GameState {
                 new Point(3070, 500),
         };
         for (int i = 0; i < zubatz.length; i++) {
-            z = new zubat(tileMap);
+            z = new Czesiek(tileMap);
             z.setPosition(zubatz[i].x, zubatz[i].y);
             enemies.add(z);
         }
@@ -218,8 +221,9 @@ public class Level2State extends GameState {
                 JukeBox.play("enemyDies");
                 enemies.remove(i);
                 i--;
-                explosions.add(
-                        new Explosion(e.getx(), e.gety()));
+                MapObject explosion = new Explosion(tileMap);
+                explosion.setPosition(e.getx(),e.gety());
+                explosions.add(explosion);
             }
         }
         // update explosions
@@ -259,8 +263,8 @@ public class Level2State extends GameState {
         }
         // draw explosions
         for (int i = 0; i < explosions.size(); i++) {
-            explosions.get(i).setMapPosition(
-                    (int) tileMap.getx(), (int) tileMap.gety());
+//            explosions.get(i).setMapPosition(
+//                    (int) tileMap.getx(), (int) tileMap.gety());
             explosions.get(i).draw(g);
         }
         // draw teleport

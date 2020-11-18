@@ -1,5 +1,7 @@
 package com.andrew.JavaGame.entity;
 
+import com.andrew.JavaGame.entity.things.player.Player;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;

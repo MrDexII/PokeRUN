@@ -1,12 +1,16 @@
-package com.andrew.JavaGame.entity;
+package com.andrew.JavaGame.entity.things.player;
 
 import com.andrew.JavaGame.audio.JukeBox;
+import com.andrew.JavaGame.entity.Enemy;
+import com.andrew.JavaGame.entity.MapObject;
+import com.andrew.JavaGame.entity.things.FireBall;
 import com.andrew.JavaGame.tileMap.TileMap;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends MapObject {
     // player stuff
@@ -21,7 +25,7 @@ public class Player extends MapObject {
     private boolean firing;
     private final int fireCost;
     private final int fireBallDamage;
-    private ArrayList<FireBall> fireBalls;
+    private List<FireBall> fireBalls;
 
     // scratch
     private boolean scratching;
@@ -87,15 +91,18 @@ public class Player extends MapObject {
 
         fireCost = 200;
         fireBallDamage = 1;
-        fireBalls = new ArrayList<FireBall>();
+        fireBalls = new ArrayList<>();
 
         scratchDamage = 1;
         scratchRange = 50;
 
+        spritesPath = "/Sprites/Player/playersprites.gif";
+
+        loadSprites();
+
         // load sprites
         try {
-            BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-                    "/Sprites/Player/playersprites.gif"));
+            BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(spritesPath));
             int count = 0;
             sprites = new ArrayList<>();
             for (int i = 0; i < NUMFRAMES.length; i++) {
@@ -328,7 +335,7 @@ public class Player extends MapObject {
         // update fireballs
         for (int i = 0; i < fireBalls.size(); i++) {
             fireBalls.get(i).update();
-            if (fireBalls.get(i).shoulRemove()) {
+            if (fireBalls.get(i).shouldRemove()) {
                 fireBalls.remove(i);
                 i--;
             }
@@ -408,19 +415,19 @@ public class Player extends MapObject {
             }
         }
 
-        animation.update();
-
         // set direction
         if (currentAction != SCRATCHING && currentAction != FIREBALL) {
             if (right) facingRight = true;
             if (left) facingRight = false;
         }
+
+        super.update();
     }
 
     public void draw(Graphics2D g) {
         setMapPosition();
         // draw fireballs
-        for (FireBall fireBall : fireBalls) {
+        for (MapObject fireBall : fireBalls) {
             fireBall.draw(g);
         }
         // draw player

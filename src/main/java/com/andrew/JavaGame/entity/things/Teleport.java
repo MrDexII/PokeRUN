@@ -1,6 +1,6 @@
-package com.andrew.JavaGame.entity;
+package com.andrew.JavaGame.entity.things;
 
-
+import com.andrew.JavaGame.entity.MapObject;
 import com.andrew.JavaGame.tileMap.TileMap;
 
 import javax.imageio.ImageIO;
@@ -33,10 +33,6 @@ public class Teleport extends MapObject {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void update() {
-        animation.update();
     }
 
     public void draw(Graphics2D g) {

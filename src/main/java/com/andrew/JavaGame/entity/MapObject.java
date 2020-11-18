@@ -1,12 +1,12 @@
 package com.andrew.JavaGame.entity;
 
-
 import com.andrew.JavaGame.GamePanel;
 import com.andrew.JavaGame.tileMap.Tile;
 import com.andrew.JavaGame.tileMap.TileMap;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-
+import java.awt.image.BufferedImage;
 
 public abstract class MapObject {
 
@@ -66,12 +66,39 @@ public abstract class MapObject {
     protected double jumpStart;
     protected double stopJumpSpeed;
 
+    // sprites settings
+    protected BufferedImage[] sprites;
+    protected String spritesPath;
+    protected int countOfFrames;
+    protected int animationDelay;
+    protected boolean remove;
+
     // constructor
     public MapObject(TileMap tm) {
         tileMap = tm;
         tileSize = tm.getTileSize();
         animation = new Animation();
         facingRight = true;
+    }
+
+    protected void loadSprites() {
+        try {
+            BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(spritesPath));
+            sprites = new BufferedImage[countOfFrames];
+            for (int i = 0; i < sprites.length; i++) {
+                sprites[i] = spritesheet.getSubimage(
+                        i * width,
+                        0,
+                        width,
+                        height
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        animation = new Animation();
+        animation.setFrames(sprites);
+        animation.setDelay(animationDelay);
     }
 
     public boolean intersects(MapObject o) {
@@ -257,6 +284,14 @@ public abstract class MapObject {
                 y + ymap - height > GamePanel.HEIGHT;
     }
 
+    public boolean shouldRemove() {
+        return remove;
+    }
+
+    public void update() {
+        animation.update();
+    }
+
     public void draw(Graphics2D g) {
         setMapPosition();
         if (facingRight) {
@@ -281,23 +316,5 @@ public abstract class MapObject {
 		r.x += xmap;
 		r.y += ymap;
 		g.draw(r);*/
-
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
