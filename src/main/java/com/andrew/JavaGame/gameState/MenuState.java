@@ -8,6 +8,7 @@ import com.andrew.JavaGame.tileMap.Background;
 import java.awt.*;
 
 public class MenuState extends GameState {
+
     private Background bg;
 
     private int currentChoice = 0;
@@ -24,23 +25,33 @@ public class MenuState extends GameState {
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
+
         try {
+
             // load background
             bg = new Background("/Backgrounds/menubg.gif", 1);
             bg.setVector(-0.9, 0);
 
             titleColor = new Color(128, 0, 0);
-            titleFont = new Font("Times New Roman", Font.BOLD, 28);
+            titleFont = new Font(
+                    "Times New Roman",
+                    Font.BOLD,
+                    28);
+
             font = new Font("Arial", Font.PLAIN, 12);
 
             // load sound
             JukeBox.load("/Music/menuMusicLowQuality.mp3.mp3", "menuoption");
             JukeBox.loop("menuoption", 600, JukeBox.getFrames("menuoption") - 2200);
+
             JukeBox.load("/SFX/menuChoiceSound.mp3.mp3", "menuChoiceSound");
             JukeBox.load("/SFX/punch2.mp3.mp3", "punch2");
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void init() {
@@ -53,6 +64,7 @@ public class MenuState extends GameState {
     }
 
     public void draw(Graphics2D g) {
+
         // draw bg
         bg.draw(g);
 

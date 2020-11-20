@@ -74,4 +74,5 @@ public class Animation {
     public boolean hasPlayed(int i) {
         return timesPlayed == i;
     }
+
 }

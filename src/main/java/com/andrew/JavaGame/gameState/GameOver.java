@@ -1,5 +1,6 @@
 package com.andrew.JavaGame.gameState;
 
+
 import com.andrew.JavaGame.audio.JukeBox;
 import com.andrew.JavaGame.handlers.Keys;
 import com.andrew.JavaGame.tileMap.Background;
@@ -23,6 +24,7 @@ public class GameOver extends GameState {
 
     public GameOver(GameStateManager gsm) {
         super(gsm);
+
         try {
 
             bg = new Background("/Backgrounds/menubg.gif", 1);
@@ -50,6 +52,7 @@ public class GameOver extends GameState {
     }
 
     public void draw(Graphics2D g) {
+
         // draw bg
         bg.draw(g);
 

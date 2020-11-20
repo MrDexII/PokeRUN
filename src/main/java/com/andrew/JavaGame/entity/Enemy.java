@@ -17,12 +17,14 @@ public class Enemy extends MapObject {
 
     public Enemy(TileMap tm) {
         super(tm);
+        //	remove = false;
         right = true;
     }
 
     public boolean isDead() {
         return dead;
     }
+    //public boolean shouldRemove() { return remove; }
 
     public int getDamage() {
         return damage;

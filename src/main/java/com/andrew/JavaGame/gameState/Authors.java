@@ -1,5 +1,6 @@
 package com.andrew.JavaGame.gameState;
 
+
 import com.andrew.JavaGame.audio.JukeBox;
 import com.andrew.JavaGame.handlers.Keys;
 import com.andrew.JavaGame.tileMap.Background;
@@ -30,9 +31,12 @@ public class Authors extends GameState {
     private Font font1;
 
     public Authors(GameStateManager gsm) {
+
+
         super(gsm);
 
         try {
+
             bg = new Background("/Backgrounds/menubg.gif", 1);
             bg.setVector(-0.9, 0);
 
@@ -48,18 +52,22 @@ public class Authors extends GameState {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void init() {
     }
 
     public void update() {
+
         bg.update();
+
         // check keys
         handleInput();
     }
 
     public void draw(Graphics2D g) {
+
         // draw bg
         bg.draw(g);
 
@@ -84,6 +92,7 @@ public class Authors extends GameState {
         g.setColor(Color.GREEN);
         for (int i = 0; i < authors.length; i++) {
             g.drawString(authors[i], 250, 120 + i * 20);
+
         }
     }
 

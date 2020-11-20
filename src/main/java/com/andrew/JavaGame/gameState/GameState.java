@@ -1,5 +1,6 @@
 package com.andrew.JavaGame.gameState;
 
+
 public abstract class GameState {
 
     protected GameStateManager gsm;

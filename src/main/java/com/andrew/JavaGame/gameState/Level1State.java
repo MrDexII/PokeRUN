@@ -1,33 +1,51 @@
 package com.andrew.JavaGame.gameState;
 
+import com.andrew.JavaGame.GamePanel;
 import com.andrew.JavaGame.audio.JukeBox;
-import com.andrew.JavaGame.entity.Enemy;
+import com.andrew.JavaGame.entity.*;
 import com.andrew.JavaGame.entity.enemies.*;
-import com.andrew.JavaGame.entity.things.Door;
-import com.andrew.JavaGame.entity.things.Teleport;
+import com.andrew.JavaGame.entity.things.*;
 import com.andrew.JavaGame.entity.things.player.Player;
 import com.andrew.JavaGame.entity.things.player.PlayerSave;
+import com.andrew.JavaGame.handlers.Keys;
 import com.andrew.JavaGame.tileMap.Background;
 import com.andrew.JavaGame.tileMap.TileMap;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Level1State extends AbstractLevelState {
+public class Level1State extends GameState {
     private Background bg;
     private Background balloon;
     private Background balloon1;
     private Background bird;
 
+    private Player player;
+    private TileMap tileMap;
+    private ArrayList<Enemy> enemies;
+    private ArrayList<MapObject> explosions;
+
+    private HUD hud;
+    private Teleport teleport;
     private Door door1;
     private Door door2;
     private Door door3;
 
+    //events
+    private boolean blockInput = false;
+    private int eventCount = 0;
+    private boolean eventStart;
+    private boolean eventFinish;
+    private boolean eventDead;
+    private ArrayList<Rectangle> tb;
+
     public Level1State(GameStateManager gsm) {
         super(gsm);
+        init();
     }
 
     public void init() {
+
         // backgrounds
         bg = new Background("/Backgrounds/back.gif", 0);
         balloon = new Background("/Backgrounds/balloon.gif", 0.1);
@@ -41,17 +59,21 @@ public class Level1State extends AbstractLevelState {
         tileMap.setPosition(0, 0);
         tileMap.setTween(0.7);
 
-        currentGameState = GameStateManager.LEVEL1STATE;
-        nextGameState = GameStateManager.LEVEL2STATE;
-
         //player
         player = new Player(tileMap);
         player.setPosition(100, 100);
         //player.setPosition(4000, 600);
         player.setHealth(PlayerSave.getHealth());
 
+
         // enemies
+        enemies = new ArrayList<Enemy>();
         populateEnemies();
+
+        // explosions
+        explosions = new ArrayList<MapObject>();
+
+        hud = new HUD(player);
 
         // teleport
         teleport = new Teleport(tileMap);
@@ -65,6 +87,11 @@ public class Level1State extends AbstractLevelState {
         door3 = new Door(tileMap);
         door3.setPosition(2595, 660);
 
+        // start event
+        eventStart = true;
+        tb = new ArrayList<Rectangle>();
+        eventStart();
+
         //SFX
         JukeBox.load("/SFX/kniveHits.mp3.mp3", "kniveHits");
         JukeBox.load("/SFX/enemyDies.mp3.mp3", "enemyDies");
@@ -74,11 +101,10 @@ public class Level1State extends AbstractLevelState {
         JukeBox.load("/Music/inGameMusicLowQuality.mp3.mp3", "level1");
         JukeBox.loop("level1", 600, JukeBox.getFrames("level1") - 2200);
         JukeBox.stop("menuoption");
-
-        super.init();
     }
 
-    protected void populateEnemies() {
+    private void populateEnemies() {
+
         enemies = new ArrayList<Enemy>();
 
         Bandit c;
@@ -165,7 +191,16 @@ public class Level1State extends AbstractLevelState {
 
     }
 
+
     public void update() {
+
+        // check keys
+        handleInput();
+
+        // check if end of level event should start
+        if (teleport.contains(player)) {
+            eventFinish = blockInput = true;
+        }
         //check doors
         if (door1.contains(player)) {
             player.setPosition(player.getx(), 100);
@@ -177,35 +212,203 @@ public class Level1State extends AbstractLevelState {
             player.setPosition(player.getx(), 75);
         }
 
+        // check if player dead event should start
+        if (player.getHealth() == 0 || player.gety() > tileMap.getHeight()) {
+            eventDead = blockInput = true;
+        }
+        // play events
+        if (eventStart) eventStart();
+        if (eventDead) eventDead();
+        if (eventFinish) eventFinish();
+
+        // update player
+        player.update();
+
+        // update tilemap
+        tileMap.setPosition(
+                GamePanel.WIDTH / 2 - player.getx(),
+                GamePanel.HEIGHT / 2 - player.gety()
+        );
+
         //set background
         balloon.setPosition(tileMap.getx(), tileMap.gety());
         balloon1.setPosition(tileMap.getx(), tileMap.gety());
         bird.setPosition(tileMap.getx(), tileMap.gety());
 
-        super.update();
+
+        // update all enemies
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemy e = enemies.get(i);
+            e.update();
+            if (e.isDead()) {
+                JukeBox.play("enemyDies");
+                enemies.remove(i);
+                i--;
+                MapObject explosion = new Explosion(tileMap);
+                explosion.setPosition(e.getx(),e.gety());
+                explosions.add(explosion);
+            }
+        }
+
+        // update explosions
+        for (int i = 0; i < explosions.size(); i++) {
+            explosions.get(i).update();
+            if (explosions.get(i).shouldRemove()) {
+                explosions.remove(i);
+                i--;
+            }
+        }
+        // attack enemies
+        player.checkAttack(enemies);
+
+        // update teleport
+        teleport.update();
     }
 
     public void draw(Graphics2D g) {
+
         // draw bg
         bg.draw(g);
         balloon.draw(g);
         balloon1.draw(g);
         bird.draw(g);
 
+
+        // draw tilemap
         tileMap.draw(g);
 
-        //draw doors
+        // draw player
+        player.draw(g);
+
+        // draw enemies
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).draw(g);
+        }
+
+        // draw explosions
+        for (int i = 0; i < explosions.size(); i++) {
+//            explosions.get(i).setMapPosition(
+//                    (int) tileMap.getx(), (int) tileMap.gety());
+            explosions.get(i).draw(g);
+        }
+        // draw teleport
+        teleport.draw(g);
+
+        //draw dors
         door1.draw(g);
         door2.draw(g);
         door3.draw(g);
 
-        super.draw(g);
+        // draw hud
+        hud.draw(g);
+
+        // draw transition boxes
+        g.setColor(java.awt.Color.BLACK);
+        for (int i = 0; i < tb.size(); i++) {
+            g.fill(tb.get(i));
+        }
+
     }
 
+    public void handleInput() {
+        if (Keys.isPressed(Keys.ESCAPE)) gsm.setPaused(true);
+        if (blockInput || player.getHealth() == 0) return;
+        player.setUp(Keys.keyState[Keys.UP]);
+        player.setLeft(Keys.keyState[Keys.LEFT]);
+        player.setDown(Keys.keyState[Keys.DOWN]);
+        player.setRight(Keys.keyState[Keys.RIGHT]);
+        player.setJumping(Keys.keyState[Keys.BUTTON1]);
+        if (Keys.isPressed(Keys.BUTTON3)) player.setFiring();
+        if (Keys.isPressed(Keys.BUTTON2)) player.setScratching();
+    }
+
+    //events
+
     // reset level
-    protected void reset() {
+    private void reset() {
         player.reset();
         player.setPosition(100, 100);
-        super.reset();
+        populateEnemies();
+        blockInput = true;
+        eventCount = 0;
+        eventStart = true;
+        eventStart();
+    }
+
+    // level started
+    private void eventStart() {
+        eventCount++;
+        if (eventCount == 1) {
+            tb.clear();
+            tb.add(new Rectangle(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT / 2));
+            tb.add(new Rectangle(0, 0, GamePanel.WIDTH / 2, GamePanel.HEIGHT));
+            tb.add(new Rectangle(0, GamePanel.HEIGHT / 2, GamePanel.WIDTH, GamePanel.HEIGHT / 2));
+            tb.add(new Rectangle(GamePanel.WIDTH / 2, 0, GamePanel.WIDTH / 2, GamePanel.HEIGHT));
+        }
+        if (eventCount > 1 && eventCount < 60) {
+            tb.get(0).height -= 4;
+            tb.get(1).width -= 6;
+            tb.get(2).y += 4;
+            tb.get(3).x += 6;
+        }
+        if (eventCount == 60) {
+            eventStart = blockInput = false;
+            eventCount = 0;
+            tb.clear();
+        }
+    }
+
+    // player has died
+    private void eventDead() {
+        eventCount++;
+        if (eventCount == 1) {
+            player.setDead();
+            player.stop();
+        }
+        if (eventCount == 60) {
+            tb.clear();
+            tb.add(new Rectangle(
+                    GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
+        } else if (eventCount > 60) {
+            tb.get(0).x -= 6;
+            tb.get(0).y -= 4;
+            tb.get(0).width += 12;
+            tb.get(0).height += 8;
+        }
+        if (eventCount >= 120) {
+            if (player.getHealth() == 0) {
+                gsm.setState(GameStateManager.LEVEL1STATE);
+            } else {
+                eventDead = blockInput = false;
+                eventCount = 0;
+                player.loseLife();
+                reset();
+            }
+        }
+    }
+
+    // finished level
+    private void eventFinish() {
+        eventCount++;
+        if (eventCount == 1) {
+            JukeBox.play("teleport");
+            player.setTeleporting(true);
+            player.stop();
+        } else if (eventCount == 120) {
+            tb.clear();
+            tb.add(new Rectangle(
+                    GamePanel.WIDTH / 2, GamePanel.HEIGHT / 2, 0, 0));
+        } else if (eventCount > 120) {
+            tb.get(0).x -= 6;
+            tb.get(0).y -= 4;
+            tb.get(0).width += 12;
+            tb.get(0).height += 8;
+            JukeBox.stop("teleport");
+        }
+        if (eventCount == 180) {
+            PlayerSave.setHealth(player.getHealth());
+
+            gsm.setState(GameStateManager.LEVEL2STATE);
+        }
     }
 }
