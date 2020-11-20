@@ -1,6 +1,5 @@
 package com.andrew.JavaGame.tileMap;
 
-
 import com.andrew.JavaGame.GamePanel;
 
 import javax.imageio.ImageIO;
