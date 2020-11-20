@@ -1,6 +1,5 @@
 package com.andrew.JavaGame.entity.things;
 
-
 import com.andrew.JavaGame.entity.Animation;
 import com.andrew.JavaGame.entity.MapObject;
 import com.andrew.JavaGame.tileMap.TileMap;
